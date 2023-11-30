@@ -29,23 +29,7 @@ function BadmintonCoachApp() {
     }
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem('players', JSON.stringify(players))
-    distributePlayers()
-  }, [players])
-
-  const handleInputChange = (e) => {
-    setNewPlayer({ ...newPlayer, [e.target.name]: e.target.value })
-  }
-
-  const addPlayer = () => {
-    if (newPlayer.name && newPlayer.skillLevel) {
-      setPlayers([...players, newPlayer])
-      setNewPlayer({ name: '', skillLevel: '' })
-    }
-  }
-
-  const distributePlayers = () => {
+  const distributePlayers = useCallback(() => {
     let sortedPlayers = [...players].sort((a, b) => a.skillLevel - b.skillLevel)
     let newCourts = Array(6)
       .fill()
@@ -56,6 +40,22 @@ function BadmintonCoachApp() {
     })
 
     setCourts(newCourts)
+  }, [players])
+
+  useEffect(() => {
+    localStorage.setItem('players', JSON.stringify(players))
+    distributePlayers()
+  }, [players, distributePlayers])
+
+  const handleInputChange = (e) => {
+    setNewPlayer({ ...newPlayer, [e.target.name]: e.target.value })
+  }
+
+  const addPlayer = () => {
+    if (newPlayer.name && newPlayer.skillLevel) {
+      setPlayers([...players, newPlayer])
+      setNewPlayer({ name: '', skillLevel: '' })
+    }
   }
 
   const getTotalSkillLevel = (court) => {
