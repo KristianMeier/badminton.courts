@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   TextField,
   Button,
@@ -6,6 +6,8 @@ import {
   Paper,
   Typography,
   Grid,
+  Box,
+  Divider,
 } from '@mui/material'
 
 function BadmintonCoachApp() {
@@ -56,6 +58,10 @@ function BadmintonCoachApp() {
     setCourts(newCourts)
   }
 
+  const getTotalSkillLevel = (court) => {
+    return court.reduce((total, player) => total + player.skillLevel, 0)
+  }
+
   return (
     <Container>
       <Paper style={{ padding: '20px', margin: '20px 0' }}>
@@ -103,14 +109,21 @@ function BadmintonCoachApp() {
           Courts Assignment
         </Typography>
         {courts.map((court, index) => (
-          <div key={index}>
-            <Typography>Court {index + 1}</Typography>
+          <Box
+            key={index}
+            mb={4}>
+            <Typography variant="h6">
+              Court {index + 1} (Total Skill: {getTotalSkillLevel(court)})
+            </Typography>
             {court.map((player, idx) => (
-              <Typography key={idx}>
-                {player.name} (Level: {player.skillLevel})
-              </Typography>
+              <React.Fragment key={idx}>
+                <Typography>
+                  {player.name} (Level: {player.skillLevel})
+                </Typography>
+                {idx % 2 === 1 && <Divider style={{ margin: '8px 0' }} />}
+              </React.Fragment>
             ))}
-          </div>
+          </Box>
         ))}
       </Paper>
     </Container>
